@@ -2,7 +2,7 @@ import React from "react";
 
 function AppHeader() {
   return (
-    <div>
+    <div className="app__header">
       <h1>Data Harga Ikan</h1>
     </div>
   );

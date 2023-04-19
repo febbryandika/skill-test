@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import Table from './Table';
+import Select from 'react-select';
 
 const Body = () => {
-  const [data, setData] = useState([]);
-  let count = 1;
+  const [dataFish, setDataFish] = useState([]);
+  const [dataArea, setDataArea] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     const SteinStore = require('stein-js-client');
     const store = new SteinStore(
@@ -10,66 +15,53 @@ const Body = () => {
     );
 
     store.read('list').then((data) => {
-      setData(data);
+      setDataFish(data.filter((row) =>
+        row.komoditas !== null &&
+        row.area_provinsi !== null &&
+        row.area_kota !== null &&
+        row.size !== null &&
+        row.price !== null
+      ));
+    });
+
+    store.read("option_area").then((data) => {
+      setDataArea(
+        data
+          .filter((row) => row.province !== null && row.city !== null)
+      );
     });
   }, []);
 
+  const filterChange = (value) => {
+    setFilter(value);
+  };
+
   return (
-    <div className="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Komoditas</th>
-            <th>Provinsi</th>
-            <th>Kota</th>
-            <th>Size</th>
-            <th>Harga</th>
-            <th>Tanggal</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data
-            .filter(
-              (row) =>
-                row.komoditas !== null &&
-                row.area_provinsi !== null &&
-                row.area_kota !== null &&
-                row.size !== null &&
-                row.price !== null &&
-                row.tgl_parsed !== null
-            )
-            .map((row, index) => (
-              <tr key={index}>
-                <td>{count++}</td>
-                <td>
-                  {row.komoditas
-                    .toLowerCase()
-                    .replace(/\b\w/g, (match) => match.toUpperCase())}
-                </td>
-                <td>
-                  {row.area_provinsi
-                    .toLowerCase()
-                    .replace(/\b\w/g, (match) => match.toUpperCase())}
-                </td>
-                <td>
-                  {row.area_kota
-                    .toLowerCase()
-                    .replace(/\b\w/g, (match) => match.toUpperCase())}
-                </td>
-                <td>{row.size}</td>
-                <td>{row.price}</td>
-                <td>
-                  {new Date(row.tgl_parsed).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+    <div className="app__body">
+      <div className="search-filter">
+        <input
+          className="search"
+          type="text"
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Cari produk ikan"
+        />
+        <Select
+          className="filter"
+          options={dataArea
+            .map((area) => ({
+              label: area.city,
+              value: area.city,
+            }))
+            .sort((a, b) => {
+              return a.label.localeCompare(b.label);
+            })}
+          onChange={(e) => filterChange(e.value)}
+          placeholder="Filter berdasarkan kota"
+        />
+      </div>
+      <div>
+        <Table data={dataFish} search={search} filter={filter} />
+      </div>
     </div>
   );
 }
