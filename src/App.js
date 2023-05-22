@@ -1,11 +1,11 @@
-import Body from './components/Body';
-import AppHeader from './components/Header';
+import PriceList from './components/PriceList';
+import PriceListHeader from "./components/PriceListHeader";
 
 function App() {
   return (
     <>
-      <AppHeader />
-      <Body />
+      <PriceListHeader />
+      <PriceList />
     </>
   );
 }
