@@ -1,6 +1,7 @@
 *{
   margin: 0;
   padding: 0;
+  // max-width: 100%;
 }
 
 .price-list-header {
@@ -123,7 +124,7 @@
 }
 
 .price-list-input {
-  width: 90%;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
