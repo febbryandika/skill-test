@@ -31,10 +31,7 @@ const PriceList = () => {
               row.size !== null &&
               row.price !== null &&
               row.area_kota[0] !== " "
-          )
-          .sort((a, b) => {
-            return b.tgl_parsed.localeCompare(a.tgl_parsed);
-          });
+          );
         setDataFish(filterListData);
         setFetchListData(true);
       } catch (error) {
